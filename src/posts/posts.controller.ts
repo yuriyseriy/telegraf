@@ -23,7 +23,7 @@ export class PostsController {
   @Post('parse')
   async parse() {
     const count = 100;
-    const history = true;
+    const history = false;
 
     const posts = await this.vkService.loadPosts();
     for (const item of posts.items) {
