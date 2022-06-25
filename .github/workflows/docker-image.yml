@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag image:$(date +%s)
+      run: docker build . --file Dockerfile --tag yuriyseiry/telegraf:$(date +%s)
       
     - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_HUB_REPO_NAME}}
+      run: docker push yuriyseiry/telegraf
