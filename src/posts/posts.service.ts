@@ -4,7 +4,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { createDeflateRaw } from 'zlib';
+import { ListAllPosts } from './dto/list-all-posts';
 
 @Injectable()
 export class PostsService {
@@ -26,19 +26,29 @@ export class PostsService {
     }
   }
 
-  findAll() {
-    return this.postsRepository.find();
+  async findAll(options: ListAllPosts) {
+    // sort
+
+    const [items, count] = await this.postsRepository.findAndCount({
+      take: options.take,
+      skip: options.skip,
+    });
+
+    return {
+      count,
+      items,
+    };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return this.postsRepository.findOneBy({ id });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
     return `This action updates a #${id} post`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    await this.postsRepository.softDelete(id);
   }
 }

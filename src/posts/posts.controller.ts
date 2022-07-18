@@ -6,24 +6,27 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { VkService } from '../vk/vk.service';
+import { ListAllPosts } from './dto/list-all-posts';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
     private readonly vkService: VkService,
-  ) {
-  }
+  ) {}
 
   @Post('parse')
   async parse() {
     const count = 100;
-    const history = false;
+    const history = true;
 
     const posts = await this.vkService.loadPosts();
     for (const item of posts.items) {
@@ -56,18 +59,10 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
-  @Get('count')
-  async count() {
-    const count = await this.postsService.findAll();
-
-    return {
-      count: count.length,
-    };
-  }
-
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  findAll(@Query() query: ListAllPosts) {
+    return this.postsService.findAll(query);
   }
 
   @Get(':id')
@@ -81,7 +76,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.postsService.remove(+id);
   }
 }
