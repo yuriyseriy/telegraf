@@ -25,7 +25,9 @@ export class PostsSchedule {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  // every 1 minute
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('0 */1 * * * *')
   async handleCron() {
     await this.run();
 

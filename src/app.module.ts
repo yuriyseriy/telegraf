@@ -24,11 +24,13 @@ const TELEGRAM_BOT_TOKEN = '5092876698:AAHQiRrcHXrrdQravLoQ1C4x8polBgX_OjM';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const IS_SSL = configService.get('IS_SSL');
-        console.log(configService.get('DATABASE_URL'));
+        const url = configService.get('DATABASE_URL');
+
+        console.log(url);
+
         return {
           type: 'postgres',
-          url: configService.get('DATABASE_URL'),
-          // entities: [Post],
+          url,
           synchronize: true,
           logging: true,
           autoLoadEntities: true,
