@@ -32,6 +32,9 @@ export class PostsService {
     const [items, count] = await this.postsRepository.findAndCount({
       take: options.take,
       skip: options.skip,
+      order: {
+        date: 'DESC',
+      },
     });
 
     return {
